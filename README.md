@@ -1,5 +1,5 @@
 # README: RIPL Lab Assignment Submission by Mainak Mallick
-
+### The GitHub Page for the project can be found here - 
 ---
 
 ## Task I: ManiSkill Setup
@@ -18,7 +18,7 @@
 - Explored environment properties such as observation space, action space, and task-specific rewards.
 
 **Challenges & Fixes:**
-- Encountered a Vulkan driver issue on GPU backend while running on ICEas mentioned here - 
+- Encountered a Vulkan driver issue on GPU backend while running on ICE as mentioned here - 
   - `/home/hice1/mmallick7/.local/lib/python3.10/site-packages/sapien/_vulkan_tricks.py:37: UserWarning: Failed to find Vulkan ICD file. This is probably due to an incorrect or partial installation of the NVIDIA driver. SAPIEN will attempt to provide an ICD file anyway but it may not work. warn`. This was unresolved, because I didn't had the permission for running sudo apt-get install libvulkan1 command - though it didn't impact the training process because it's only used for rendering interactive UI.
 
 ---
@@ -35,19 +35,27 @@
 - Total iterations: 30,000
 - Batch size: 256
 - Learning rate: 1e-4 (AdamW)
+- max_episode_steps 100
+- demos - 451
 - Scheduler: Cosine with linear warmup (500 steps)
-- VRAM Usage: ~9.8GB (NVIDIA A4000)
+- VRAM Usage: ~9.8GB (NVIDIA L40S)
 - Training time: ~14 hours for full training on Push-T
 
 **Outcomes:**
 - Final success rate on Push-T (standard eval): 84.3%
+- Experimented with prediction horizon and acting horizon combinations -
+- 
 - Observed improved performance with higher `act_horizon`
-- Trained models saved in `runs/Push-T_Diffusion/checkpoints/`
+- Trained models saved in `/home/hice1/mmallick7/scratch/maniskill/ManiSkill/scripts/data_generation/runs/diffusion_policy-PushT-v1-rgb-451_motionplanning_demos-1/checkpoints/best_eval_success_at_end.pt`
 
-**Challenges:**
+**Challenges and Comments:**
 - Stabilization required tuning batch size and warmup steps
+- As per the issue provided here there should be 700 episodes but I could found only 451 in total
+- Faced challenging situation because in the h5 file dense reward was initially not getting genrated
 - Minor bug in reward_mode settings in `make_eval_envs`, fixed by explicitly passing reward_mode='sparse'
-
+**Results and Plots:**
+![Multi-Modal Behavior Rollout](images/multimodal_behavior.png)  
+The rest of the plots can be found here - 
 ---
 
 ## Task III: Multi-Modal Behavior Analysis

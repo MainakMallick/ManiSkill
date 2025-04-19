@@ -58,25 +58,25 @@
 Below are snapshots of training metrics visualized using Weights & Biases:
 
 ### Training Curve 1
-![W&B Chart 1](images/W&B_Chart_4_19_2025_6_11_58_PM.png)
+![W&B Chart 1](Images/W&B_Chart_4_19_2025_6_11_58_PM.png)
 
 ### Training Curve 2
-![W&B Chart 2](images/W&B_Chart_4_19_2025_6_12_07_PM.png)
+![W&B Chart 2](Images/W&B_Chart_4_19_2025_6_12_07_PM.png)
 
 ### Training Curve 3
-![W&B Chart 3](images/W&B_Chart_4_19_2025_6_12_13_PM.png)
+![W&B Chart 3](Images/W&B_Chart_4_19_2025_6_12_13_PM.png)
 
 ### Training Curve 4
-![W&B Chart 4](images/W&B_Chart_4_19_2025_6_12_19_PM.png)
+![W&B Chart 4](Images/W&B_Chart_4_19_2025_6_12_19_PM.png)
 
 ### Training Curve 5
-![W&B Chart 5](images/W&B_Chart_4_19_2025_6_12_26_PM.png)
+![W&B Chart 5](Images/W&B_Chart_4_19_2025_6_12_26_PM.png)
 
 ### Training Curve 6
-![W&B Chart 6](images/W&B_Chart_4_19_2025_6_12_40_PM.png)
+![W&B Chart 6](Images/W&B_Chart_4_19_2025_6_12_40_PM.png)
 
 ### Training Curve 7
-![W&B Chart 7](images/W&B_Chart_4_19_2025_6_13_47_PM.png)
+![W&B Chart 7](Images/W&B_Chart_4_19_2025_6_13_47_PM.png)
 
 The rest of the plots can be found here - 
 ---

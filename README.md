@@ -59,11 +59,11 @@ Below are snapshots of training metrics visualized using Weights & Biases:
 
 | Chart 1 | Chart 2 | Chart 3 |
 |---------|---------|---------|
-| ![](Images/WBChart419202561158PM.png) | ![](Images/W&BChart419202561207PM.png) | ![](Images/W&BChart419202561213PM.png) |
+| ![](Images/WBChart419202561158PM.png) | ![](Images/WBChart419202561207PM.png) | ![](Images/WBChart419202561213PM.png) |
 | Chart 4 | Chart 5 | Chart 6 |
-| ![](Images/W&BChart419202561219PM.png) | ![](Images/W&BChart419202561226PM.png) | ![](Images/W&BChart419202561240PM.png) |
+| ![](Images/WBChart419202561219PM.png) | ![](Images/WBChart419202561226PM.png) | ![](Images/WBChart419202561240PM.png) |
 | Chart 7 |         |         |
-| ![](Images/W&BChart419202561247PM.png) |         |         |
+| ![](Images/WBChart419202561247PM.png) |         |         |
 
 
 The rest of the plots can be found here - 

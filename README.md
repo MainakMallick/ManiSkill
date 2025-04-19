@@ -58,7 +58,7 @@
 Below are snapshots of training metrics visualized using Weights & Biases:
 
 ### Training Curve 1
-![W&B Chart 1](Images/W&B_Chart_4_19_2025_6_11_58_PM.png)
+![W&B Chart 1](Images/WBChart419202561158PM.png)
 
 ### Training Curve 2
 ![W&B Chart 2](Images/W&B_Chart_4_19_2025_6_12_07_PM.png)

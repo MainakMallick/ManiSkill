@@ -1,4 +1,4 @@
-# README: RIPL Lab Assignment Submission by [Your Name]
+# README: RIPL Lab Assignment Submission by Mainak Mallick
 
 ---
 

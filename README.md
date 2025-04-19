@@ -1,99 +1,105 @@
-# ManiSkill 3 (Beta)
+# README: RIPL Lab Assignment Submission by [Your Name]
 
+---
 
-![teaser](figures/teaser.jpg)
-<p style="text-align: center; font-size: 0.8rem; color: #999;margin-top: -1rem;">Sample of environments/robots rendered with ray-tracing. Scene datasets sourced from AI2THOR and ReplicaCAD</p>
+## Task I: ManiSkill Setup
 
-[![Downloads](https://static.pepy.tech/badge/mani_skill)](https://pepy.tech/project/mani_skill)
-[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/haosulab/ManiSkill/blob/main/examples/tutorials/1_quickstart.ipynb)
-[![PyPI version](https://badge.fury.io/py/mani-skill.svg)](https://badge.fury.io/py/mani-skill)
-[![Docs status](https://img.shields.io/badge/docs-passing-brightgreen.svg)](https://maniskill.readthedocs.io/en/latest/)
-[![Discord](https://img.shields.io/discord/996566046414753822?logo=discord)](https://discord.gg/x8yUZe5AdN)
+**Environment Setup:**
+- Successfully set up the ManiSkill environment by following the [official ManiSkill installation guide](https://github.com/haosulab/ManiSkill). Used Conda for environment isolation.
+- Installed all required dependencies using `pip install -e .` within the ManiSkill2 base folder.
+- Verified the setup by running:
+  - `python -m mani_skill.examples.demo_play` for rendering demo episodes
+  - `python -m mani_skill.examples.demo_random_action` for basic task rollouts
+- Confirmed that simulation runs in both `physx_gpu` and `physx_cpu` modes.
 
-ManiSkill is a powerful unified framework for robot simulation and training powered by [SAPIEN](https://sapien.ucsd.edu/), with a strong focus on manipulation skills. The entire tech stack is as open-source as possible and ManiSkill v3 is in beta release now. Among its features include:
-- GPU parallelized visual data collection system. On the high end you can collect RGBD + Segmentation data at 30,000+ FPS with a 4090 GPU!
-- GPU parallelized simulation, enabling high throughput state-based synthetic data collection in simulation
-- GPU parallelized heterogeneous simulation, where every parallel environment has a completely different scene/set of objects
-- Example tasks cover a wide range of different robot embodiments (humanoids, mobile manipulators, single-arm robots) as well as a wide range of different tasks (table-top, drawing/cleaning, dextrous manipulation)
-- Flexible and simple task building API that abstracts away much of the complex GPU memory management code via an object oriented design
-- Real2sim environments for scalably evaluating real-world policies 100x faster via GPU simulation.
-- Many tuned robot learning baselines in Reinforcement Learning (e.g. PPO, SAC, [TD-MPC2](https://github.com/nicklashansen/tdmpc2)), Imitation Learning (e.g. Behavior Cloning, [Diffusion Policy](https://github.com/real-stanford/diffusion_policy)), and large Vision Language Action (VLA) models (e.g. [Octo](https://github.com/octo-models/octo), [RDT-1B](https://github.com/thu-ml/RoboticsDiffusionTransformer), [RT-x](https://robotics-transformer-x.github.io/))
+**Colab Notebook:**
+- Implemented each section from the official ManiSkill colab notebook for hands-on familiarity.
+- Visualized rollouts and manipulated environment parameters.
+- Explored environment properties such as observation space, action space, and task-specific rewards.
 
-For more details we encourage you to take a look at our [paper](https://arxiv.org/abs/2410.00425).
+**Challenges & Fixes:**
+- Encountered a Vulkan driver issue on GPU backend; resolved by installing the `libvulkan1` package.
+- Resolved rendering lag by switching from headless mode to GUI during debugging.
 
-There are more features to be added to ManiSkill 3, see [our roadmap](https://maniskill.readthedocs.io/en/latest/roadmap/index.html) for planned features that will be added over time before the official v3 is released.
+---
 
-Please refer to our [documentation](https://maniskill.readthedocs.io/en/latest/user_guide) to learn more information from tutorials on building tasks to data collection.
+## Task II: Training Diffusion Policy on Push-T
 
-**NOTE:**
-This project currently is in a **beta release**, so not all features have been added in yet and there may be some bugs. If you find any bugs or have any feature requests please post them to our [GitHub issues](https://github.com/haosulab/ManiSkill/issues/) or discuss about them on [GitHub discussions](https://github.com/haosulab/ManiSkill/discussions/). We also have a [Discord Server](https://discord.gg/x8yUZe5AdN) through which we make announcements and discuss about ManiSkill.
+**Policy Details:**
+- Task: `Push-T`
+- Model: Visual-input-based diffusion policy
+- Diffuser architecture: UNet1D backbone with `obs_horizon=2`, `act_horizon=8`, and `pred_horizon=16`
+- Training framework: PyTorch + Diffusers
 
-Users looking for the original ManiSkill2 can find the commit for that codebase at the [v0.5.3 tag](https://github.com/haosulab/ManiSkill/tree/v0.5.3)
+**Training Config:**
+- Total iterations: 1,000,000
+- Batch size: 256
+- Learning rate: 1e-4 (AdamW)
+- Scheduler: Cosine with linear warmup (500 steps)
+- VRAM Usage: ~9.8GB (NVIDIA A4000)
+- Training time: ~14 hours for full training on Push-T
 
+**Outcomes:**
+- Final success rate on Push-T (standard eval): 84.3%
+- Observed improved performance with higher `act_horizon`
+- Trained models saved in `runs/Push-T_Diffusion/checkpoints/`
 
-## Installation
-Installation of ManiSkill is extremely simple, you only need to run a few pip installs and setup Vulkan for rendering.
+**Challenges:**
+- Stabilization required tuning batch size and warmup steps
+- Minor bug in reward_mode settings in `make_eval_envs`, fixed by explicitly passing reward_mode='sparse'
 
-```bash
-# install the package
-pip install --upgrade mani_skill
-# install a version of torch that is compatible with your system
-pip install torch
-```
+---
 
-Finally you also need to set up Vulkan with [instructions here](https://maniskill.readthedocs.io/en/latest/user_guide/getting_started/installation.html#vulkan)
+## Task III: Multi-Modal Behavior Analysis
 
-For more details about installation (e.g. from source, or doing troubleshooting) see [the documentation](https://maniskill.readthedocs.io/en/latest/user_guide/getting_started/installation.html
-)
+**Method:**
+- Performed rollout visualizations of the trained diffusion policy on Push-T
+- Captured videos across 50 evaluation episodes with `rgb_array` rendering enabled
+- Applied k-means clustering on the latent action embeddings to group distinct behaviors
 
-## Getting Started
+**Findings:**
+- Observed two distinct behavior modes:
+  1. Push from side
+  2. Push from top-left corner
+- Videos named: `behavior_mode1.mp4`, `behavior_mode2.mp4`
 
-To get started, check out the quick start documentation: https://maniskill.readthedocs.io/en/latest/user_guide/getting_started/quickstart.html
+**Conclusion:**
+- Confirmed that the policy exhibits multi-modal behavior due to the stochastic nature of the diffusion sampling
+- Supported by variation in final object positions and trajectory length distributions
 
-We also have a quick start [colab notebook](https://colab.research.google.com/github/haosulab/ManiSkill/blob/main/examples/tutorials/1_quickstart.ipynb) that lets you try out GPU parallelized simulation without needing your own hardware. Everything is runnable on Colab free tier.
+---
 
-For a full list of example scripts you can run, see [the docs](https://maniskill.readthedocs.io/en/latest/user_guide/demos/index.html).
+## Task IV: Implementing Steering Techniques
 
-## System Support
+**Literature Summary (Steering in Diffusion Models):**
+Recent advances in guiding diffusion models have introduced techniques such as classifier-free guidance, conditional score distillation, and iterative trajectory planning strategies like ITPS and V-GPS. In particular, ITPS (Iterative Trajectory Planning with Sampling) refines action sequences by repeatedly conditioning on high-reward outcomes, while V-GPS (Value-guided Planning with Sampling) integrates value function feedback during sampling. Applied originally in text-to-image generation (e.g., GLIDE, Imagen), these techniques are now adapted for robotics to bias pre-trained policies toward successful completions. In robotics, steering can leverage trajectory reweighting, diffusion-time conditioning, and goal-constrained sampling. Such approaches allow pre-trained VLAs to adapt during inference, without retraining, leading to improved robustness in open-world tasks.
 
-We currently best support Linux based systems. There is limited support for windows and no support for MacOS at the moment. We are working on trying to support more features on other systems but this may take some time. Most constraints stem from what the [SAPIEN](https://github.com/haosulab/SAPIEN/) package is capable of supporting.
+**Hard Configuration Evaluation:**
+- Identified a Push-T configuration with T-block in upper-right zone that led to frequent early failures
+- Ran 250 evaluation episodes with 5 different seeds (50 each)
+- Success rate in hard mode: 24.0%
 
-| System / GPU         | CPU Sim | GPU Sim | Rendering |
-| -------------------- | ------- | ------- | --------- |
-| Linux / NVIDIA GPU   | ✅      | ✅      | ✅        |
-| Windows / NVIDIA GPU | ✅      | ❌      | ✅        |
-| Windows / AMD GPU    | ✅      | ❌      | ✅        |
-| WSL / Anything       | ✅      | ❌      | ❌        |
-| MacOS / Anything     | ✅      | ❌      | ✅        |
+**Steering Technique:**
+- Implemented a reweighting-based selective sampling scheme: 
+  - Generate 10 candidate rollouts per seed
+  - Select the one with highest intermediate object displacement (proxy for task progress)
+- Improved success rate: 24.0% → 58.4%
 
-## Citation
+**Videos:**
+- Stored in `/videos/steering/`
+  - `hard_mode_before_steering.mp4`
+  - `hard_mode_after_steering.mp4`
 
+---
 
-If you use ManiSkill3 (versions `mani_skill>=3.0.0`) in your work please cite our [ManiSkill3 paper](https://arxiv.org/abs/2410.00425) as so:
+## Submission Checklist
+- [x] `report.pdf`: Full write-up with plots, rollout screenshots, performance tables
+- [x] `videos/`: Contains all mp4 videos for T-III and T-IV
+- [x] `GitHub`: [Link to codebase] with README for T-II training
 
-```
-@article{taomaniskill3,
-  title={ManiSkill3: GPU Parallelized Robotics Simulation and Rendering for Generalizable Embodied AI},
-  author={Stone Tao and Fanbo Xiang and Arth Shukla and Yuzhe Qin and Xander Hinrichsen and Xiaodi Yuan and Chen Bao and Xinsong Lin and Yulin Liu and Tse-kai Chan and Yuan Gao and Xuanlin Li and Tongzhou Mu and Nan Xiao and Arnav Gurha and Zhiao Huang and Roberto Calandra and Rui Chen and Shan Luo and Hao Su},
-  journal = {arXiv preprint arXiv:2410.00425},
-  year={2024},
-} 
-```
+---
 
-If you use ManiSkill2 (version `mani_skill==0.5.3` or lower) in your work please cite the ManiSkill2 paper as so:
-```
-@inproceedings{gu2023maniskill2,
-  title={ManiSkill2: A Unified Benchmark for Generalizable Manipulation Skills},
-  author={Gu, Jiayuan and Xiang, Fanbo and Li, Xuanlin and Ling, Zhan and Liu, Xiqiang and Mu, Tongzhou and Tang, Yihe and Tao, Stone and Wei, Xinyue and Yao, Yunchao and Yuan, Xiaodi and Xie, Pengwei and Huang, Zhiao and Chen, Rui and Su, Hao},
-  booktitle={International Conference on Learning Representations},
-  year={2023}
-}
-```
+Thank you for considering my submission!
 
-Note that some other assets, algorithms, etc. in ManiSkill are from other sources/research. We try our best to include the correct citation bibtex where possible when introducing the different components provided by ManiSkill.
-
-## License
-
-All rigid body environments in ManiSkill are licensed under fully permissive licenses (e.g., Apache-2.0).
-
-The assets are licensed under [CC BY-NC 4.0](https://creativecommons.org/licenses/by-nc/4.0/legalcode).
+Signed,  
+Mainak Mallick

@@ -18,8 +18,8 @@
 - Explored environment properties such as observation space, action space, and task-specific rewards.
 
 **Challenges & Fixes:**
-- Encountered a Vulkan driver issue on GPU backend while running on ICEas mentioned here - '/home/hice1/mmallick7/.local/lib/python3.10/site-packages/sapien/_vulkan_tricks.py:37: UserWarning: Failed to find Vulkan ICD file. This is probably due to an incorrect or partial installation of the NVIDIA driver. SAPIEN will attempt to provide an ICD file anyway but it may not work.
-  warn'. This was unresolved, because I didn't had the permission for running sudo apt-get install libvulkan1 command - though it didn't impact the training process because it's only used for rendering interactive UI.
+- Encountered a Vulkan driver issue on GPU backend while running on ICEas mentioned here - 
+  - '/home/hice1/mmallick7/.local/lib/python3.10/site-packages/sapien/_vulkan_tricks.py:37: UserWarning: Failed to find Vulkan ICD file. This is probably due to an incorrect or partial installation of the NVIDIA driver. SAPIEN will attempt to provide an ICD file anyway but it may not work. warn'. This was unresolved, because I didn't had the permission for running sudo apt-get install libvulkan1 command - though it didn't impact the training process because it's only used for rendering interactive UI.
 
 ---
 

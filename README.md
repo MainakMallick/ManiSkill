@@ -1,4 +1,4 @@
-# README: RIPL Lab Assignment Submission by Mainak Mallick
+# RIPL Lab Assignment Submission by Mainak Mallick
 ### The GitHub Page for the project can be found here - 
 ---
 
@@ -62,8 +62,8 @@ Below are snapshots of training metrics visualized using Weights & Biases:
 | ![](Images/WBChart419202561158PM.png) | ![](Images/WBChart419202561207PM.png) | ![](Images/WBChart419202561213PM.png) |
 | Chart 4 | Chart 5 | Chart 6 |
 | ![](Images/WBChart419202561219PM.png) | ![](Images/WBChart419202561226PM.png) | ![](Images/WBChart419202561240PM.png) |
-| Chart 7 |         |         |
-| ![](Images/WBChart419202561247PM.png) |         |         |
+| Chart 7 | Chart 8        |   Chart 9      |
+| ![](Images/WBChart419202561247PM.png) | ![](Images/WBChart419202564221PM.png)         | ![](Images/WBChart419202564229PM.png)         |
 
 
 The rest of the plots can be found here - 

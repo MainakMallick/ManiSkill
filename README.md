@@ -193,7 +193,7 @@ python /home/hice1/mmallick7/scratch/maniskill/ManiSkill/examples/baselines/diff
 - NA
 
 ---
-
+Process to reproduce the result can be found [here]([.](https://github.com/MainakMallick/ManiSkill/blob/main/Modified_File_MM/readme.md))
 ## Submission Checklist
 - [x] `report.pdf`: Full write-up with plots, rollout screenshots, performance tables
 - [x] `videos/`: Contains all mp4 videos for T-III and T-IV

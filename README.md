@@ -1,5 +1,4 @@
-# RIPL Lab Assignment Submission by Mainak Mallick
-### The GitHub Page for the project can be found here - 
+# RIPL Lab Assignment Submission by Mainak Mallick 
 ---
 
 ## Task I: ManiSkill Setup
@@ -32,29 +31,31 @@
 - Training framework: PyTorch + Diffusers
 
 **Training Config:**
-- Total iterations: 30,000
+- Total iterations: 30,000 (could have gone with 1000,000 iterations but got stuck due to time constrait)
 - Batch size: 256
 - Learning rate: 1e-4 (AdamW)
 - max_episode_steps 100
-- demos - 451
-- Scheduler: Cosine with linear warmup (500 steps)
+- Demos - 451
 - VRAM Usage: ~9.8GB (NVIDIA L40S)
-- Training time: ~14 hours for full training on Push-T
+- Warmup steps - 500
+
 
 **Outcomes:**
-- Final success rate on Push-T (standard eval): 84.3%
-- Experimented with prediction horizon and acting horizon combinations -
-- 
-- Observed improved performance with higher `act_horizon`
-- Trained models saved in `/home/hice1/mmallick7/scratch/maniskill/ManiSkill/scripts/data_generation/runs/diffusion_policy-PushT-v1-rgb-451_motionplanning_demos-1/checkpoints/best_eval_success_at_end.pt`
+- Experimented with prediction horizon and acting horizon combinations-
+- Act_horizon, pred_horizon(1): 8,16  
+  Act_horizon, pred_horizon(2): 6,12  
+  Act_horizon, pred_horizon(3): 10, 18
+- Highest success rate on Push-T: 30.4% on 8,16 combination
+- Observed near to no performance improvement dufference when the action horizon is modified, but for prediction horizon I abserved maximum succes rate in 8,16 combination and dipped in both ways.
+- Trained models saved in `/ManiSkill/scripts/data_generation/runs/diffusion_policy-PushT-v1-rgb-451_motionplanning_demos-1/checkpoints/best_eval_success_at_end.pt`
 
 **Challenges and Comments:**
-- Stabilization required tuning batch size and warmup steps
-- As per the issue provided here there should be 700 episodes but I could found only 451 in total
-- Faced challenging situation because in the h5 file dense reward was initially not getting genrated
-- Minor bug in reward_mode settings in `make_eval_envs`, fixed by explicitly passing reward_mode='sparse'
-**Results and Plots:**
+- Stabilization required tuning batch size and warmup steps.
+- As per the issue provided [here](https://github.com/haosulab/ManiSkill/issues/882) there should be 700 episodes but I could found only 451 in total.
+- Faced challenging situation while cresting the rgbd.h5 file in the h5 file dense reward was initially not getting genrated, so there was no improvement, there was a just a success failure boolean. Fixed
+   it by explicitly passing reward mode as dense while generating the data.
 
+**Results and Plots:**
 Below are snapshots of training metrics visualized using Weights & Biases:
 
 | Chart 1 | Chart 2 | Chart 3 |
@@ -63,17 +64,17 @@ Below are snapshots of training metrics visualized using Weights & Biases:
 | Chart 4 | Chart 5 | Chart 6 |
 | ![](Images/WBChart419202561219PM.png) | ![](Images/WBChart419202561226PM.png) | ![](Images/WBChart419202561240PM.png) |
 | Chart 7 | Chart 8        |   Chart 9      |
-| ![](Images/WBChart419202561247PM.png) | ![](Images/WBChart419202564221PM.png)         | ![](Images/WBChart419202564229PM.png)         |
+| ![](Images/WBChart419202561247PM.png) | ![](Images/WBChart419202564221PM.png) | ![](Images/WBChart419202564229PM.png) |
 
 
-The rest of the plots can be found here - 
+The rest of the plots can be found [here](https://wandb.ai/mainakmallick-georgia-institute-of-technology/ManiSkill/runs/soja5l5v?nw=nwusermainakmallick)
 ---
 
 ## Task III: Multi-Modal Behavior Analysis
 
 **Method:**
 - Performed rollout visualizations of the trained diffusion policy on Push-T
-- Captured videos across 50 evaluation episodes with `rgb_array` rendering enabled
+- Captured videos across 700 evaluation episodes with `rgb_array` rendering enabled
 - Applied k-means clustering on the latent action embeddings to group distinct behaviors
 
 **Findings:**
@@ -114,7 +115,7 @@ Recent advances in guiding diffusion models have introduced techniques such as c
 ## Submission Checklist
 - [x] `report.pdf`: Full write-up with plots, rollout screenshots, performance tables
 - [x] `videos/`: Contains all mp4 videos for T-III and T-IV
-- [x] `GitHub`: [Link to codebase] with README for T-II training
+- [x] `GitHub`: [Link to codebase] with README
 
 ---
 

@@ -4,8 +4,15 @@
 ## Task I: ManiSkill Setup
 
 **Environment Setup:**
-- Successfully set up the ManiSkill environment by following the [official ManiSkill installation guide](https://github.com/haosulab/ManiSkill). Used Conda for environment isolation.
-- Installed all required dependencies using `pip install -e .` within the ManiSkill2 base folder.
+- Successfully set up the ManiSkill environment by following the [official ManiSkill installation guide](https://github.com/haosulab/ManiSkill).
+- Used Conda for environment isolation and created the environment as mentioned [here](https://github.com/haosulab/ManiSkill/tree/main/examples/baselines/diffusion_policy).
+- Installed all required Maniskill dependencies using:
+```bash
+# install the package
+pip install --upgrade mani_skill
+# install a version of torch that is compatible with your system
+pip install torch
+```
 - Verified the setup by running:
   - `python -m mani_skill.examples.demo_play` for rendering demo episodes
   - `python -m mani_skill.examples.demo_random_action` for basic task rollouts
@@ -41,9 +48,33 @@
 - demos - 451
 
 **Dataset Generation:**
-
+For this, first run command - ` python -m mani_skill.utils.download_demo "PickCube-v1" ` to download  `trajectory.none.pd_joint_delta_pos.physx_cuda.h5 ` with no observation mode selected.  
+Then I ran the command - 
+```bash
+python -m mani_skill.trajectory.replay_trajectory \
+  --traj-path ~/.maniskill/demos/PushT-v1/rl/trajectory.none.pd_ee_delta_pose.physx_cuda.h5 \
+  --use-first-env-state -c pd_ee_delta_pos -o rgb \
+  --save-traj --num-envs 256 -b physx_cuda
+```
+which was running with `reward="dense"` config which takes the no obs file with initial state and actions, replays it by setting the initial state and then stepping through the recorded actions using the pd_ee_delta_pos controller, generates rgb image observations (requires rendering) during the replay, and saves a new `trajectory file trajectory.rgb.pd_ee_delta_pos.physx_cuda.h5` containing actions and the corresponding `rgb` observations file.
 **Training Procedure:** 
-
+For training I used this command - 
+```
+seed=1
+demos=451
+ 
+python /home/hice1/mmallick7/scratch/maniskill/ManiSkill/examples/baselines/diffusion_policy/train_rgbd.py \
+  --env-id PushT-v1 \
+  --demo-path ~/.maniskill/demos/PushT-v1/rl/trajectory.rgb.pd_ee_delta_pos.physx_cuda.h5 \
+  --control-mode pd_ee_delta_pos \
+  --sim-backend physx_cuda \
+  --num-demos "$demos" \
+  --max_episode_steps 100 \
+  --total_iters 30000 \
+  --obs-mode rgb \
+  --exp-name diffusion_policy-PushT-v1-rgb-${demos}_motionplanning_demos-${seed} \
+  --track
+```
 **Outcomes:**
 - Experimented with prediction horizon and acting horizon combinations-
 - Act_horizon, pred_horizon(1): 8,16  
@@ -77,7 +108,7 @@ The rest of the plots can be found [here](https://wandb.ai/mainakmallick-georgia
 
 **Method:**
 - Performed rollout visualizations of the trained diffusion policy on Push-T
-- Captured videos across 700 evaluation episodes with `rgb_array` rendering enabled
+- Captured videos across 70 evaluation episodes with `rgb_array` rendering enabled, each with 10 parallel env rollout simulation
 
 **Findings:**
 - Observed two distinct behavior modes:
@@ -104,13 +135,13 @@ Together, these works underscore a growing trend in **compute-aware inference-ti
 
 **Evaluation script generation:**
 
-After quite a few number of attempts, I couldn't able to find out a standalone evaluation script or configuration of train_rgbd.py which will just run the trained diffusion policy 250 times in this “hard” evaluation episode and report the success rate (SR) in this specific evaluation episode over 5 different random seeds. So I developed one - `test_policy.py`
+After quite a few number of attempts, I couldn't able to find out a standalone evaluation script or configuration of train_rgbd.py for the diffusion policy case(though there are configurations in ppo case) which will just run the trained diffusion policy 250 times in this “hard” evaluation episode and report the success rate (SR) in this specific evaluation episode over 5 different random seeds. So I developed one - `test_policy.py`
 
 While developing this script I encountered a couple of challenges - 
 
 *   *Challenge:* Code failed with `ModuleNotFoundError` for `FrameStack`.
     *   *Implication:* Script failed to start due to inability to import a necessary environment wrapper.
-    *   **Solution:** Correct the import path for `FrameStack` from `...wrappers.observation` to `...wrappers`.
+    *   *Solution:* Correct the import path for `FrameStack` from `...wrappers.observation` to `...wrappers`.
 
 *   *Challenge:* Checkpoint loading failed with `size mismatch` errors for model layers.
     *   *Implication:* Pre-trained agent weights could not be loaded because the current model structure didn't match the saved one.
@@ -139,6 +170,10 @@ While developing this script I encountered a couple of challenges -
 *   *Challenge:* Implement evaluation of a specific episode configuration multiple times with varying rollout seeds.
     *   *Implication:* The script lacked the required functionality for focused, repeated analysis of a single, specific scenario.
     *   *Solution:* Add arguments and code logic to create a single environment, loop runs, manage seeds, reset to the target episode seed, and track success rate.
+ 
+**Evaluation Procedure:**   
+Ran the `test_policy.py` with this configuration - 
+
 
 **Hard Configuration Evaluation:**
 - Identified a Push-T configuration with T-block in upper-right zone that led to frequent early failures in episode 26th which was our "hard" episode.
@@ -147,7 +182,13 @@ While developing this script I encountered a couple of challenges -
 
 **Steering Technique:**
 Was not able to succesfully implement due to time constraint.
-
+```bash
+python /home/hice1/mmallick7/scratch/maniskill/ManiSkill/examples/baselines/diffusion_policy/test_policy.py
+--env_id="PushT-v1"
+--evaluate
+--checkpoint=/home/hice1/mmallick7/scratch/maniskill/ManiSkill/scripts/data_generation/runs/diffusion_policy-PushT-v1-rgb-451_motionplanning_demos-1/checkpoints/best_eval_success_once.pt
+--num_eval_episodes 50
+```
 **Videos:**
 - NA
 

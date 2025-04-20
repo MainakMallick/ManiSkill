@@ -36,7 +36,7 @@
 - Learning rate: 1e-4 (AdamW)
 - max_episode_steps 100
 - Demos - 451
-- VRAM Usage: ~9.8GB (NVIDIA L40S)
+- VRAM Usage: ~12.1GB (NVIDIA L40S)
 - Warmup steps - 500
 - demos - 451
 **Dataset Generation:**
@@ -77,13 +77,13 @@ The rest of the plots can be found [here](https://wandb.ai/mainakmallick-georgia
 **Method:**
 - Performed rollout visualizations of the trained diffusion policy on Push-T
 - Captured videos across 700 evaluation episodes with `rgb_array` rendering enabled
-- Applied k-means clustering on the latent action embeddings to group distinct behaviors
 
 **Findings:**
 - Observed two distinct behavior modes:
-  1. Push from side
-  2. Push from top-left corner
-- Videos named: [🎥 Watch Demo Video](videos/demo1.mp4), [🎥 Watch Demo Video](videos/demo2.mp4)
+  1. Push from Top part
+  2. Push from Bottom part
+  which leads to a success in demo 1 but failure in demo 2.
+- Videos named: [Demo Video 1](videos/demo1.mp4), [Demo Video 2](videos/demo2.mp4)
 
 **Conclusion:**
 - Confirmed that the policy exhibits multi-modal behavior due to the stochastic nature of the diffusion sampling
@@ -92,20 +92,26 @@ The rest of the plots can be found [here](https://wandb.ai/mainakmallick-georgia
 ---
 
 ## Task IV: Implementing Steering Techniques
+## Literature Review: Steering in Diffusion Model Architectures
 
-**Literature Summary (Steering in Diffusion Models):**
-Recent advances in guiding diffusion models have introduced techniques such as classifier-free guidance, conditional score distillation, and iterative trajectory planning strategies like ITPS and V-GPS. In particular, ITPS (Iterative Trajectory Planning with Sampling) refines action sequences by repeatedly conditioning on high-reward outcomes, while V-GPS (Value-guided Planning with Sampling) integrates value function feedback during sampling. Applied originally in text-to-image generation (e.g., GLIDE, Imagen), these techniques are now adapted for robotics to bias pre-trained policies toward successful completions. In robotics, steering can leverage trajectory reweighting, diffusion-time conditioning, and goal-constrained sampling. Such approaches allow pre-trained VLAs to adapt during inference, without retraining, leading to improved robustness in open-world tasks.
+Recent advancements in steering diffusion-based generative policies have introduced efficient mechanisms for aligning robot behavior with user intent during inference, without requiring fine-tuning. **Inference-Time Policy Steering (ITPS)** [Wang et al., 2024] proposes guiding a frozen generative policy using real-time human interactions (point goals, trajectory sketches, and physical corrections). It incorporates these forms of input as alignment objectives during the sampling process, either post-hoc (e.g., output perturbation, ranking) or during diffusion (e.g., guided or stochastic sampling). Among these, **Stochastic Sampling (SS)** demonstrated the best trade-off between alignment and constraint satisfaction by approximating sampling from the product of the trajectory and user-intent distributions, instead of their sum, thereby reducing distribution shift and preserving the validity of the generated trajectories. 
+
+In parallel, **Value-Guided Policy Steering (V-GPS)** [Nakamoto et al., 2024] uses a value function trained via offline RL to re-rank actions sampled from generalist policies (e.g., Octo, RT-X, OpenVLA) at test-time. This modular plug-and-play framework improves robustness and precision in real-world robotic manipulation tasks without altering the base policy. Unlike ITPS, which leverages interaction-conditioned objectives for fine-grained trajectory shaping, V-GPS focuses on maximizing task reward alignment through high-value action selection, and has shown consistent improvements across 12 real-world and simulated tasks. 
+
+Together, these works underscore a growing trend in **compute-aware inference-time steering** that enables adaptive, goal-aligned behaviors in pre-trained diffusion or transformer-based policies, and highlight promising directions for scalable, multimodal control in robotics.
+
+
+**Evaluation script generation:**
+After quite a few number of attempts, I couldn't able to find out a standalone evaluation script or configuration of train_rgbd.py which will just run the trained diffusion policy 250 times in this “hard” evaluation episode and report the success rate (SR) in this specific evaluation episode over 5 different random seeds. So I developed one - `test_policy.py`
+While developing this script I encountered a couple of challenges - 
 
 **Hard Configuration Evaluation:**
-- Identified a Push-T configuration with T-block in upper-right zone that led to frequent early failures
+- Identified a Push-T configuration with T-block in upper-right zone that led to frequent early failures in episode 26th which was our "hard" episode.
 - Ran 250 evaluation episodes with 5 different seeds (50 each)
 - Success rate in hard mode: 24.0%
 
 **Steering Technique:**
-- Implemented a reweighting-based selective sampling scheme: 
-  - Generate 10 candidate rollouts per seed
-  - Select the one with highest intermediate object displacement (proxy for task progress)
-- Improved success rate: 24.0% → 58.4%
+Was not able to succesfully implement due to time constraint.
 
 **Videos:**
 - Stored in `/videos/steering/`

@@ -39,6 +39,7 @@
 - VRAM Usage: ~12.1GB (NVIDIA L40S)
 - Warmup steps - 500
 - demos - 451
+
 **Dataset Generation:**
 
 **Training Procedure:** 
@@ -106,6 +107,38 @@ Together, these works underscore a growing trend in **compute-aware inference-ti
 After quite a few number of attempts, I couldn't able to find out a standalone evaluation script or configuration of train_rgbd.py which will just run the trained diffusion policy 250 times in this “hard” evaluation episode and report the success rate (SR) in this specific evaluation episode over 5 different random seeds. So I developed one - `test_policy.py`
 
 While developing this script I encountered a couple of challenges - 
+
+*   *Challenge:* Code failed with `ModuleNotFoundError` for `FrameStack`.
+    *   *Implication:* Script failed to start due to inability to import a necessary environment wrapper.
+    *   **Solution:** Correct the import path for `FrameStack` from `...wrappers.observation` to `...wrappers`.
+
+*   *Challenge:* Checkpoint loading failed with `size mismatch` errors for model layers.
+    *   *Implication:* Pre-trained agent weights could not be loaded because the current model structure didn't match the saved one.
+    *   *Solution:* Ensure evaluation script arguments (`--obs_mode`, `--control_mode`) match the agent's configuration during checkpoint training.
+
+*   *Challenge:* `evaluate` function call failed due to unexpected horizon arguments (`obs_horizon`, etc.).
+    *   *Implication:* Standard evaluation process could not be executed due to incorrect function usage (API mismatch).
+    *   *Solution:* Remove horizon arguments from calls to the `evaluate` function, letting it rely on the agent's internal parameters.
+
+*   *Challenge:* `agent.get_action` failed trying `torch.from_numpy` on an object that was already a `Tensor`.
+    *   *Implication:* Evaluation rollouts crashed mid-episode due to incorrect data type handling within the agent's action generation.
+    *   *Solution:* Modify `agent.get_action` to handle both NumPy and Tensor inputs gracefully without in-place modification.
+
+*   *Challenge:* `evaluate` function failed trying `.cpu().numpy()` on an object that was already a NumPy array.
+    *   *Implication:* Evaluation rollouts crashed after getting an action due to redundant data type conversion in the evaluation loop.
+    *   *Solution:* Remove the redundant `.cpu().numpy()` conversion for the action sequence inside the `evaluate` function.
+
+*   *Challenge:* Evaluation metrics could not be saved to JSON due to NumPy data types.
+    *   *Implication:* Evaluation completed, but the numerical results could not be saved persistently in the standard JSON format.
+    *   *Solution:* Add explicit conversion of NumPy arrays (`.tolist()`) and scalars (`.item()`) to standard Python types before saving JSON.
+
+*   *Challenge:* GPU environment creation failed with `RuntimeError: GPU PhysX can only be enabled once...`.
+    *   *Implication:* GPU-accelerated environment initialization failed because CPU PhysX was activated first by a temporary environment.
+    *   *Solution:* Modify the temporary environment creation (for obs space check) to use the script's `args.sim_backend`, ensuring consistent PhysX initialization.
+
+*   *Challenge:* Implement evaluation of a specific episode configuration multiple times with varying rollout seeds.
+    *   *Implication:* The script lacked the required functionality for focused, repeated analysis of a single, specific scenario.
+    *   *Solution:* Add arguments and code logic to create a single environment, loop runs, manage seeds, reset to the target episode seed, and track success rate.
 
 **Hard Configuration Evaluation:**
 - Identified a Push-T configuration with T-block in upper-right zone that led to frequent early failures in episode 26th which was our "hard" episode.

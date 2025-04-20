@@ -103,6 +103,7 @@ Together, these works underscore a growing trend in **compute-aware inference-ti
 
 **Evaluation script generation:**
 After quite a few number of attempts, I couldn't able to find out a standalone evaluation script or configuration of train_rgbd.py which will just run the trained diffusion policy 250 times in this “hard” evaluation episode and report the success rate (SR) in this specific evaluation episode over 5 different random seeds. So I developed one - `test_policy.py`
+
 While developing this script I encountered a couple of challenges - 
 
 **Hard Configuration Evaluation:**

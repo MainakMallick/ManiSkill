@@ -1,6 +1,6 @@
 # RIPL Lab Assignment Submission by Mainak Mallick 
 ---
-!(Images/Demo.png)
+![Demo](Images/demo.png)
 ## Task I: ManiSkill Setup
 
 **Environment Setup:**

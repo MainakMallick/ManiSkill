@@ -1,6 +1,6 @@
 # RIPL Lab Assignment Submission by Mainak Mallick 
 ---
-
+!(Images/Demo.png)
 ## Task I: ManiSkill Setup
 
 **Environment Setup:**
@@ -38,6 +38,7 @@
 - Demos - 451
 - VRAM Usage: ~9.8GB (NVIDIA L40S)
 - Warmup steps - 500
+- demos - 451
 
 
 **Outcomes:**
@@ -51,9 +52,8 @@
 
 **Challenges and Comments:**
 - Stabilization required tuning batch size and warmup steps.
-- As per the issue provided [here](https://github.com/haosulab/ManiSkill/issues/882) there should be 700 episodes but I could found only 451 in total.
-- Faced challenging situation while cresting the rgbd.h5 file in the h5 file dense reward was initially not getting genrated, so there was no improvement, there was a just a success failure boolean. Fixed
-   it by explicitly passing reward mode as dense while generating the data.
+- As per the issue provided [here](https://github.com/haosulab/ManiSkill/issues/882) there should be 700 demonstartions but I could found only 451 in total.
+- Faced challenging situation while creating the trajectory.rgb.pd_ee_delta_pos.physx_cuda.h5 file from the trajectory.none.pd_joint_delta_pos.physx_cuda.h5 file, dense reward was initially not getting genrated,  there was a just a success failure boolean, as a result so there was no improvement while training. Fixed it by explicitly passing reward mode as dense while generating the data.
 
 **Results and Plots:**
 Below are snapshots of training metrics visualized using Weights & Biases:

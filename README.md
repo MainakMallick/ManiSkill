@@ -39,7 +39,9 @@
 - VRAM Usage: ~9.8GB (NVIDIA L40S)
 - Warmup steps - 500
 - demos - 451
+**Dataset Generation:**
 
+**Training Procedure:** 
 
 **Outcomes:**
 - Experimented with prediction horizon and acting horizon combinations-
@@ -81,7 +83,7 @@ The rest of the plots can be found [here](https://wandb.ai/mainakmallick-georgia
 - Observed two distinct behavior modes:
   1. Push from side
   2. Push from top-left corner
-- Videos named: `behavior_mode1.mp4`, `behavior_mode2.mp4`
+- Videos named: [🎥 Watch Demo Video](videos/demo1.mp4), [🎥 Watch Demo Video](videos/demo2.mp4)
 
 **Conclusion:**
 - Confirmed that the policy exhibits multi-modal behavior due to the stochastic nature of the diffusion sampling

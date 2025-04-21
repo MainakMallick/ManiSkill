@@ -1,1 +1,1 @@
-
+To reproduce the results, download the files and replace it in place of the orignal files, and run with the provided commands. The `train_policy.py` should be kept in the same directory as `train_rgbd.py`

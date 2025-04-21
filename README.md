@@ -174,6 +174,13 @@ While developing this script I encountered a couple of challenges -
 **Evaluation Procedure:**   
 Ran the `test_policy.py` with this configuration - 
 
+```bash
+python /home/hice1/mmallick7/scratch/maniskill/ManiSkill/examples/baselines/diffusion_policy/test_policy.py
+--env_id="PushT-v1"
+--evaluate
+--checkpoint=/home/hice1/mmallick7/scratch/maniskill/ManiSkill/scripts/data_generation/runs/diffusion_policy-PushT-v1-rgb-451_motionplanning_demos-1/checkpoints/best_eval_success_once.pt
+--num_eval_episodes 50
+```
 
 **Hard Configuration Evaluation:**
 - Identified a Push-T configuration with T-block in upper-right zone that led to frequent early failures in episode 26th which was our "hard" episode.
@@ -182,22 +189,12 @@ Ran the `test_policy.py` with this configuration -
 
 **Steering Technique:**
 Was not able to succesfully implement due to time constraint.
-```bash
-python /home/hice1/mmallick7/scratch/maniskill/ManiSkill/examples/baselines/diffusion_policy/test_policy.py
---env_id="PushT-v1"
---evaluate
---checkpoint=/home/hice1/mmallick7/scratch/maniskill/ManiSkill/scripts/data_generation/runs/diffusion_policy-PushT-v1-rgb-451_motionplanning_demos-1/checkpoints/best_eval_success_once.pt
---num_eval_episodes 50
-```
+
 **Videos:**
 - NA
 
 ---
 Process to reproduce the result can be found [here]([.](https://github.com/MainakMallick/ManiSkill/blob/main/Modified_File_MM/readme.md))
-## Submission Checklist
-- [x] `report.pdf`: Full write-up with plots, rollout screenshots, performance tables
-- [x] `videos/`: Contains all mp4 videos for T-III and T-IV
-- [x] `GitHub`: [Link to codebase] with README
 
 ---
 

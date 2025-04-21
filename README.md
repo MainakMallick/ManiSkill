@@ -194,7 +194,7 @@ Was not able to succesfully implement due to time constraint.
 - NA
 
 ---
-Process to reproduce the result can be found [here]([.](https://github.com/MainakMallick/ManiSkill/blob/main/Modified_File_MM/readme.md))
+Process to reproduce the result can be found [here](https://github.com/MainakMallick/ManiSkill/blob/main/Modified_File_MM/readme.md)
 
 ---
 
